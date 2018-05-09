@@ -33,7 +33,9 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
 1. 设置本地Git客户端的user name 和email
 
-git config --global user.name "我的github注册账号"
+​       git config --global user.name "github注册账号"
 
-git config --global user.email "我的gothub注册邮箱"
+​       git config --global user.email "github注册邮箱"
+
+​       ![01设置邮箱和账号](D:\github\xuexi\Git\picture\01设置邮箱和账号.png)
 
