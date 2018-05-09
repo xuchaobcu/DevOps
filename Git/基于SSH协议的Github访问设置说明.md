@@ -37,5 +37,5 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
 ​       git config --global user.email "github注册邮箱"
 
-​       ![01设置邮箱和账号](./picture/01设置邮箱和账号.png)
+​       ![01设置邮箱和账号](./picture/01设置邮箱和账号.png =100x100)
 
