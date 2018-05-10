@@ -35,7 +35,7 @@ https://blog.csdn.net/wozaixiaoximen/article/details/49487285
 
 ​       git remote -v​
 
-<img width="300" height="400" src="./picture/02/01 检查连接信息.png"/>
+<img src="./picture/02/01 检查连接信息.png"/>
 
 
 
@@ -43,7 +43,7 @@ https://blog.csdn.net/wozaixiaoximen/article/details/49487285
 
 ​      git remote rm origin
 
- <img width="300" height="400" src="./picture/02/02 删除连接信息.png"/>     
+ <img src="./picture/02/02 删除连接信息.png"/>     
 
 
 
@@ -51,7 +51,7 @@ https://blog.csdn.net/wozaixiaoximen/article/details/49487285
 
    git remote add origin git@github.com:xuchaobcu/xuexi.git
 
-   <img width="300" height="400" src="./picture/02/03 添加连接信息.png"/>
+   <img src="./picture/02/03 添加连接信息.png"/>
 
    ​
 
@@ -62,6 +62,6 @@ https://blog.csdn.net/wozaixiaoximen/article/details/49487285
 
 git remote -v
 
-<img width="300" height="400" src="./picture/02/04 确认修改后的连接信息.png"/>
+<img src="./picture/02/04 确认修改后的连接信息.png"/>
 
 打完收工。

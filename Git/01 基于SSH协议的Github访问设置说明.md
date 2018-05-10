@@ -39,7 +39,7 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
 ​       git config --list 
 
-<img src="./picture/01设置邮箱和账号.png"/>
+<img src="./picture/01/01设置邮箱和账号.png"/>
 
 
 
@@ -49,19 +49,19 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
 ​       ssh-keygen
 
-<img src="./picture/02生成ssh密钥对.png"/>     
+<img src="./picture/01/02生成ssh密钥对.png"/>     
 
 
 
 命令执行完成后，会在指定的目录下生成一下三个文件：
 
-<img src="./picture/03秘钥生成结果.png"/>
+<img src="./picture/01/03秘钥生成结果.png"/>
 
 
 
 用本地文本编辑器打开文件id_rsa.pub,并复制器内容：
 
-<img src="./picture/03ssh密钥publickKey.png"/>
+<img src="./picture/01/03ssh密钥publickKey.png"/>
 
 
 
@@ -69,11 +69,11 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
    登陆github主页，点击个人图像，选中“Settings”;
 
-   <img src="./picture/04登陆github设置ssh秘钥01.png"/>
+   <img src="./picture/01/04登陆github设置ssh秘钥01.png"/>
 
    点击"SSH and GPG keys", 在Title中输入一个key的名字，然后再key区域将复制的id_rsa.pub内容拷贝进来，最后点击"Add SSH key"按钮。
 
-   <img src="./picture/05登陆github设置ssh秘钥02.png"/>
+   <img src="./picture/01/05登陆github设置ssh秘钥02.png"/>
 
 
 
@@ -81,6 +81,6 @@ https://blog.csdn.net/u012373815/article/details/53575362
 
 修改代码后，直接运行git push命令：
 
-<img src="./picture/06验证测试结果.png"/>
+<img src="./picture/01/06验证测试结果.png"/>
 
 大功告成。
