@@ -2,17 +2,17 @@
 
 
 
-# 搭建基于Docker技术的nginx图片服务器
+# 搭建基于Docker技术的Nginx图片服务器
 
 ***需求来源：***
 
-基于Seleniu11m的UI测试结果反馈不及时，希望能提供浏览器随时查看测试结果的在线服务。
+基于Selenium的UI测试结果反馈不及时，希望能提供浏览器随时查看测试结果的在线服务。
 
 
 
 ***参考文档：***
 
-<http://www.51testing.com/html/20/n-3722620.html> 
+http://www.runoob.com/docker/docker-install-nginx.html
 
 
 
@@ -20,207 +20,206 @@
 
 **实践步骤：**
 
-1. 查找docker仓库中selenium、chrome、firefox等相关镜像
+1. 安装nginx镜像
 
-2. 安装selenium、chrome、firefox等镜像
+2. 运行nginx容器
 
-3. 启动selenium、chrome、firefox等镜像
+3. 验证nginx文件服务器功能
 
-4. 编写UI自动化测试脚本
-
-5. 运行UI自动化测试脚本
-
-6. 验证UI自动化测试结果
-
-   
-
-**实现原理：** 
-
-<img src="./picture/01/00 selenium实现原理.png"/>
 
 **上机操作：**
 
-1. **查找Selenium相关镜像**
+1. **查找Nginx镜像**
 
-​      docker search selenium
+​      docker pull nginx
 
-<img src="./picture/01/01 查找selenium相关镜像.png"/>
-
-
-
-2. **安装Selenium相关镜像**
-
--  安装selenium/hub镜像
-
-​       docker pull selenium/hub
-
-<img src="./picture/01/02 安装selenium相关镜像.png"/>     
-
-- 安装selenium/node-chrome镜像
-
-   docker pull  selenium/node-chrome
-
-<img src="./picture/01/02 安装selenium相关镜像chrome.png"/>
-
-- 安装selenium/node-firefox镜像
-
-  docker pull  selenium/node-firefox
-
-  <img src="./picture/01/02 安装selenium相关镜像firefox.png"/>
+<img src="./picture/01/01 安装nginx镜像.png"/>
 
 
-3. **启动Selenium相关镜像**
 
-    **输入以下命令，启动Selenium相关镜像：**
+2. **运行Nginx容器**
 
-    docker run -p 5555:4444 -d --name 'selenium_hub'  selenium/hub
+-  创建nginx需要的目录
 
-    docker run -P -d --link selenium_hub:hub  selenium/node-firefox
+​       mkdir -p /mynginx/logs /mynginx/conf.d 
 
-    docker run -P -d --link selenium_hub:hub  selenium/node-chrome
+​      说明：logs目录映射为nginx容器的日志目录，conf目录中的配置文件映射为nignx容器的配置文件目上录 
 
-    docker ps 
+- 创建图片服务器存储目录
 
-    <img src="./picture/01/03 启动selenium相关镜像.png"/>
+   mkdir -p /mynginx/www
 
-    以上四条命令的作用分别是：
+   <img src="./picture/01/02 创建nginx目录.png"/>
 
-    　　第一条：启动一个Hub的镜像，名称为selenium_hub
+- 创建nginx.conf文件
 
-    　　第二条：启动一个node的镜像（带chrome浏览器）
+  vim /mynginx/conf/nginx.conf
 
-    　　第三条：启动一个node的镜像（带firefox浏览器）
+  ```sh
+  
+  #user  nobody;
+  worker_processes  1;
+  
+  #error_log  logs/error.log;
+  #error_log  logs/error.log  notice;
+  #error_log  logs/error.log  info;
+  
+  #pid        logs/nginx.pid;
+  
+  
+  events {
+      worker_connections  1024;
+  }
+  
+  
+  http {
+      include       mime.types;
+      default_type  application/octet-stream;
+  
+      #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+      #                  '$status $body_bytes_sent "$http_referer" '
+      #                  '"$http_user_agent" "$http_x_forwarded_for"';
+  
+      #access_log  logs/access.log  main;
+  
+      sendfile        on;
+      #tcp_nopush     on;
+  
+      #keepalive_timeout  0;
+      keepalive_timeout  65;
+  
+      #gzip  on;
+  
+      server {
+          listen       80;
+          server_name  localhost;
+  
+          #charset koi8-r;
+  
+          #access_log  logs/host.access.log  main;
+  
+          location / {
+              root   html;
+              index  index.html index.htm;
+          }
+  
+          location /www {
+              root /mynginx;
+              autoindex on;
+              autoindex_exact_size on;
+              autoindex_localtime on;
+              if ($request_filename ~* ^.*?\.(png|doc|pdf)$){
+                  add_header Content-Disposition: attachment;
+              }
+          }
+  
+  
+          #error_page  404              /404.html;
+  
+          # redirect server error pages to the static page /50x.html
+          #
+          error_page   500 502 503 504  /50x.html;
+          location = /50x.html {
+              root   html;
+          }
+  
+          # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+          #
+          #location ~ \.php$ {
+          #    proxy_pass   http://127.0.0.1;
+          #}
+  
+          # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+          #
+          #location ~ \.php$ {
+          #    root           html;
+          #    fastcgi_pass   127.0.0.1:9000;
+          #    fastcgi_index  index.php;
+          #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+          #    include        fastcgi_params;
+          #}
+  
+          # deny access to .htaccess files, if Apache's document root
+          # concurs with nginx's one
+          #
+          #location ~ /\.ht {
+          #    deny  all;
+          #}
+      }
+  
+  
+      # another virtual host using mix of IP-, name-, and port-based configuration
+      #
+      #server {
+      #    listen       8000;
+      #    listen       somename:8080;
+      #    server_name  somename  alias  another.alias;
+  
+      #    location / {
+      #        root   html;
+      #        index  index.html index.htm;
+      #    }
+      #}
+  
+  
+      # HTTPS server
+      #
+      #server {
+      #    listen       443 ssl;
+      #    server_name  localhost;
+  
+      #    ssl_certificate      cert.pem;
+      #    ssl_certificate_key  cert.key;
+  
+      #    ssl_session_cache    shared:SSL:1m;
+      #    ssl_session_timeout  5m;
+  
+      #    ssl_ciphers  HIGH:!aNULL:!MD5;
+      #    ssl_prefer_server_ciphers  on;
+  
+      #    location / {
+      #        root   html;
+      #        index  index.html index.htm;
+      #    }
+      #}
+  
+  }
+  
+  ```
 
-    　　检查hub和node的链接情况，用命令查看hub中的日志信息：
+- 上传测试文件
 
-    　　docker logs selenium_hub
+  <img src="./picture/01/03 上传测试文件.png"/>
 
-    <img src="./picture/01/04 启动selenium相关镜像日志信息.png"/>
+- 启动nginx容器
+
+  ```sh
+  docker run -p 80:80 --name mynginx -v $PWD/www:/www -v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf -v $PWD/logs:/wwwlogs  -d nginx
+  ```
+
+  
+
+  <img src="./picture/01/03 启动nginx容器.png"/>
+
+
+
+<img src="./picture/01/03 启动nginx容器2.png"/>
+
+
+3. **验证Nginx文件服务器功能**
+
+    从客户端的浏览器，访问docker中nginx提供的服务：
+
+    http://192.168.192.132/www/
+
+    <img src="./picture/01/05 客户端浏览器访问nginx服务.png"/>
+
+    点击其中的文件，可以在线预览：
+
+    <img src="./picture/01/06 测试nginx文件服务器功能1.png"/>
 
     
 
-    通过本地客户端的浏览器，查看docker中的hub资源信息，并查看docker中的chrome、firefox版本信息，访问地址：
-
-    http://192.168.192.132:5555/grid/console
-
-    其中192.168.192.132为docker所在宿主机对外访问的ip地址, 5555为第一条command中映射的端口号。
-
-    
-
-    <img src="./picture/01/05 查看浏览器版本信息.png"/>
-
-    在docker的宿主机上直接安装Python 3：
-
-    参考资料：
-
-    https://blog.csdn.net/elija940818/article/details/79238813
-
-    上面博客中有个错误：
-
-    ./configure --prefix=/usr/local/bin/python3
-
-    
-
-    https://www.python.org/ftp/python/3.7.0/Python-3.7.0b4.tar.xz
-
-    ```shell
-    #安装依赖组建
-    sudo yum -y groupinstall "Development tools" 
-    
-    sudo yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel 
-    
-    #下载python3安装包
-    wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0b4.tar.xz
-    
-    #解压安装包
-    cd ~/Download    #安装包的下载目录
-    tar -xvJf  Python-3.7.0a1.tar.xz
-    
-    #配置python3的安装目录并安装
-    cd Python-3.7.0a1
-    ./configure --prefix=/usr/local/bin/python3
-    sudo make
-    sudo make install
-    
-    #创建软链接
-    ln -s /usr/local/bin/python3/bin/python3 /usr/bin/python3
-    ln -s /usr/local/bin/python3/bin/pip3 /usr/bin/pip3
-    ```
-
-    
-
-    在docker的宿主机上直接安装Selennium：
-
-​       **pip3 install selenium**
-
-<img src="./picture/01/06 pip3安装selenium.png"/>
-
-​      验证python3及selenium安装成功：
-
-<img src="./picture/01/07 验证selenium和python3安装结果.png"/>
-
-4. **编写UI自动化测试脚本：**
-
-**Chrome浏览器测试脚本：**
-
-```python
-#!/usr/bin/python3
-#coding=utf-8
-from selenium import webdriver
-chrome_capabilities ={
-    "browserName": "chrome",
-    "version": "66.0.3359.170",#注意版本号一定要写对,比对gird中版本信息修正
-    "platform": "ANY",
-    "javascriptEnabled": True,
-    "marionette": True,
-}
-
-browser=webdriver.Remote("http://192.168.192.132:5555/wd/hub",desired_capabilities=chrome_capabilities)  #注意端口号5555是我们上文中映射的宿主机端口号,192.168.192.132为宿主机IP地址
-
-browser.get("http://www.baidu.com/")
-
-browser.get_screenshot_as_file("/tmp/Chrome_devops.png")
-
-browser.close()
-```
-
-
-
-**Firefox浏览器测试脚本：**
-
-```python
-#!/usr/bin/python3
-#coding=utf-8
-from selenium import webdriver
-firefox_capabilities ={
-    "browserName": "firefox",
-    "version": "60.0",#注意版本号一定要写对,比对gird中版本信息修正
-    "platform": "ANY",
-    "javascriptEnabled": True,
-    "marionette": True,
-}
-
-browser=webdriver.Remote("http://192.168.192.132:5555/wd/hub",desired_capabilities=firefox_capabilities)  #注意端口号5555是我们上文中映射的宿主机端口号,192.168.192.132为宿主机IP地址
-
-browser.get("http://www.baidu.com/")
-
-browser.get_screenshot_as_file("/tmp/Firefox_devops.png")
-
-browser.close()
-```
-
-
-
-5. **运行UI自动化测试脚本：**
-
-<img src="./picture/01/08 运行自动化测试脚本.png"/>
-
-
-
-6. **验证UI自动化测试结果：**
-
-   <img src="./picture/01/Chrome_devops.png"/>
-
-   
+    <img src="./picture/01/06 测试nginx文件服务器功能2.png"/>
 
 大功告成。
