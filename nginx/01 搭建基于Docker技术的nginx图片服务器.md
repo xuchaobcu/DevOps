@@ -29,7 +29,7 @@ http://www.runoob.com/docker/docker-install-nginx.html
 
 **上机操作：**
 
-1. **查找Nginx镜像**
+1. **安装Nginx镜像**
 
 ​      docker pull nginx
 
