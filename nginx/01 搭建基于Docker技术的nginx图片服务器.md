@@ -194,14 +194,10 @@ http://www.runoob.com/docker/docker-install-nginx.html
 - 启动nginx容器
 
   ```sh
-  docker run -p 80:80 --name mynginx -v $PWD/www:/www -v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf -v $PWD/logs:/wwwlogs  -d nginx
+  docker run -p 80:80 --name mynginx -v $PWD/www:/www -v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf -v $PWD/logs:/wwwlogs -v /mynginx/www:/mynginx/www -d nginx
   ```
 
-  
-
   <img src="./picture/01/03 启动nginx容器.png"/>
-
-
 
 <img src="./picture/01/03 启动nginx容器2.png"/>
 
